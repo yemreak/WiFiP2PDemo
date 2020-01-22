@@ -10,6 +10,8 @@ import android.net.wifi.p2p.WifiP2pDeviceList
 import android.net.wifi.p2p.WifiP2pManager
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.annotation.RequiresPermission
@@ -18,45 +20,42 @@ import kotlinx.android.synthetic.main.activity_wifip2p.*
 
 class WifiP2pActivity : AppCompatActivity() {
 
-	val PRC_ACCESS_FINE_LOCATION = 1
+    val PRC_ACCESS_FINE_LOCATION = 1
 
-	/**
-	 * WiFi alıcısı için filtreleme
-	 */
-	private val wifiFilter = IntentFilter().apply {
-		addAction(WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION)
-		addAction(WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION)
-		addAction(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION)
-		addAction(WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION)
-	}
+    companion object {
+        val TAG = WifiP2pActivity::javaClass.name
+    }
 
-	/**
-	 * WiFi değişikliklerinde receiver'ı çalıştırma
-	 */
-	private lateinit var manager: WifiP2pManager
+    /**
+     * WiFi alıcısı için filtreleme
+     */
+    private val wifiFilter = IntentFilter().apply {
+        addAction(WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION)
+        addAction(WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION)
+        addAction(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION)
+        addAction(WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION)
+    }
 
-	/**
-	 * WiFi P2P Framework'ü ile uygulamamıza bağlanmayı sağlayacak obje
-	 */
-	private lateinit var channel: WifiP2pManager.Channel
+    /**
+     * WiFi değişikliklerinde receiver'ı çalıştırma
+     */
+    private lateinit var manager: WifiP2pManager
 
-	private lateinit var wifiReceiver: WifiP2PBroadcastReceiver
+    /**
+     * WiFi P2P Framework'ü ile uygulamamıza bağlanmayı sağlayacak obje
+     */
+    private lateinit var channel: WifiP2pManager.Channel
 
-	/**
-	 * WiFi P2P aktiflik durumu
-	 */
-	var p2pEnable: Boolean = false
-		set(value) {
-			field = value
-			tvP2pStatus.text = value.toString()
-		}
+    private lateinit var wifiReceiver: WifiP2PBroadcastReceiver
 
-	override fun onCreate(savedInstanceState: Bundle?) {
-		super.onCreate(savedInstanceState)
-		setContentView(R.layout.activity_wifip2p)
-
-		initWP2P()
-	}
+    /**
+     * WiFi P2P aktiflik durumu
+     */
+    var p2pEnable: Boolean = false
+        set(value) {
+            field = value
+            tvP2pStatus.text = value.toString()
+        }
 
     /**
      * Eşleşilebilir cihazların listesi
@@ -136,31 +135,7 @@ class WifiP2pActivity : AppCompatActivity() {
 
     @RequiresPermission(Manifest.permission.ACCESS_FINE_LOCATION)
     fun onDiscoverButtonClicked(view: View) {
-        Log.d(TAG, "onDiscoverButtonClicked: Butona tıklandı")
-
-        manager.discoverPeers(channel, P2pActionListener("Keşif"))
-    }
-
-    fun onPeerAvailable(peerList: WifiP2pDeviceList) {
-        peerList.apply {
-            Log.v(TAG, "onPeersAvailable: $deviceList")
-
-            this@WifiP2pActivity.peerList.apply {
-                if (this != deviceList) {
-                    clear()
-                    addAll(deviceList)
-                }
-            }
-        }
-    }
-
-    @RequiresPermission(Manifest.permission.ACCESS_FINE_LOCATION)
-    fun connectPeer(peer: WifiP2pDevice) {
-        val config = WifiP2pConfig().apply {
-            deviceAddress = peer.deviceAddress
-        }
-
-        manager.connect(channel, config, P2pActionListener("Bağlantı"))
+        manager.discoverPeers(channel, P2pActionListener("Keşfet"))
     }
 
     class P2pActionListener(private val purpose: String) : WifiP2pManager.ActionListener {
@@ -178,5 +153,27 @@ class WifiP2pActivity : AppCompatActivity() {
 
             Log.e(TAG, "onDiscoverButtonClick: $purpose başarısız, $reasonMsg")
         }
+    }
+
+    fun storePeers(peers: WifiP2pDeviceList) {
+        peers.apply {
+            Log.v(TAG, "onPeersAvailable: $deviceList")
+
+            peerList.apply {
+                if (this != deviceList) {
+                    clear()
+                    addAll(deviceList)
+                }
+            }
+        }
+    }
+
+    @RequiresPermission(Manifest.permission.ACCESS_FINE_LOCATION)
+    fun connectPeer(peer: WifiP2pDevice) {
+        val config = WifiP2pConfig().apply {
+            deviceAddress = peer.deviceAddress
+        }
+
+        manager.connect(channel, config, P2pActionListener("Bağlantı"))
     }
 }

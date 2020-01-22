@@ -43,11 +43,11 @@ class WifiP2PBroadcastReceiver(
 		}
 	}
 
-	@RequiresPermission(Manifest.permission.ACCESS_FINE_LOCATION)
+    @RequiresPermission(Manifest.permission.ACCESS_FINE_LOCATION)
 	private fun onPeerChanged(): Unit {
-        Log.d(TAG, "onPeerChanged: WiFi eşleri değişti")
+		Log.d(TAG, "onPeerChanged: ")
 
-		manager.requestPeers(channel, wifiP2pActivity::onPeerAvailable)
+        manager.requestPeers(channel, wifiP2pActivity::storePeers)
 	}
 
 	private fun onConnectionChanged(): Unit {
