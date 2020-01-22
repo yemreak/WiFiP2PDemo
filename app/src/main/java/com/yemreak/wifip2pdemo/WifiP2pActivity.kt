@@ -155,6 +155,9 @@ class WifiP2pActivity : AppCompatActivity() {
         }
     }
 
+	/**
+	 * Cihazları peerList objesine kaydetme
+	 */
     fun storePeers(peers: WifiP2pDeviceList) {
         peers.apply {
             Log.v(TAG, "onPeersAvailable: $deviceList")

@@ -10,9 +10,9 @@ import android.util.Log
 import androidx.annotation.RequiresPermission
 
 class WifiP2PBroadcastReceiver(
-		val manager: WifiP2pManager,
-		val channel: WifiP2pManager.Channel,
-		val wifiP2pActivity: WifiP2pActivity
+        private val manager: WifiP2pManager,
+        private val channel: WifiP2pManager.Channel,
+        private val wifiP2pActivity: WifiP2pActivity
 ) : BroadcastReceiver() {
 
 	companion object {
@@ -47,7 +47,7 @@ class WifiP2PBroadcastReceiver(
 
     @RequiresPermission(Manifest.permission.ACCESS_FINE_LOCATION)
 	private fun onPeerChanged(): Unit {
-		Log.d(TAG, "onPeerChanged: ")
+        Log.d(TAG, "onPeerChanged: WiFi eşleri değişti")
 
         manager.requestPeers(channel, wifiP2pActivity::storePeers)
 	}
