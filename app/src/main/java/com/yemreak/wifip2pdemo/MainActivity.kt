@@ -35,6 +35,8 @@ class MainActivity : AppCompatActivity() {
 	 */
 	private lateinit var channel: WifiP2pManager.Channel
 
+	private lateinit var wifiReceiver: WifiP2PBroadcastReceiver
+
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.activity_main)
@@ -49,6 +51,8 @@ class MainActivity : AppCompatActivity() {
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 			getWifiP2PPermissions()
 		}
+
+		wifiReceiver = WifiP2PBroadcastReceiver(manager, channel, this)
 
 	}
 
@@ -71,11 +75,30 @@ class MainActivity : AppCompatActivity() {
 
 	override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
 		super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-		when(requestCode) {
+		when (requestCode) {
 			PRC_ACCESS_FINE_LOCATION -> if (grantResults[0] != PackageManager.PERMISSION_GRANTED) {
 				Toast.makeText(this, "Konum izni gereklidir", Toast.LENGTH_SHORT).show()
 				finish()
 			}
 		}
+	}
+
+	private fun registerWifiReceiver() {
+		registerReceiver(wifiReceiver, wifiFilter)
+	}
+
+	private fun unregisterWifiReceiver() {
+		unregisterReceiver(wifiReceiver)
+	}
+
+	override fun onResume() {
+		super.onResume()
+		registerWifiReceiver()
+	}
+
+	override fun onPause() {
+		super.onPause()
+		unregisterWifiReceiver()
+
 	}
 }
