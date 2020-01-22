@@ -1,5 +1,6 @@
 package com.yemreak.wifip2pdemo
 
+import android.annotation.SuppressLint
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -41,8 +42,11 @@ class WifiP2PBroadcastReceiver(
 		}
 	}
 
-	private fun onPeerChanged(): Unit {
+	@SuppressLint("MissingPermission")
+    private fun onPeerChanged(): Unit {
 		Log.d(TAG, "onPeerChanged: ")
+
+        manager.requestPeers(channel, wifiP2pActivity::onPeerAvailable)
 	}
 
 	private fun onConnectionChanged(): Unit {
