@@ -1,10 +1,12 @@
 package com.yemreak.wifip2pdemo
 
+import android.Manifest
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.net.wifi.p2p.WifiP2pManager
 import android.util.Log
+import androidx.annotation.RequiresPermission
 
 class WifiP2PBroadcastReceiver(
 		val manager: WifiP2pManager,
@@ -41,12 +43,15 @@ class WifiP2PBroadcastReceiver(
 		}
 	}
 
+	@RequiresPermission(Manifest.permission.ACCESS_FINE_LOCATION)
 	private fun onPeerChanged(): Unit {
-		Log.d(TAG, "onPeerChanged: ")
+        Log.d(TAG, "onPeerChanged: WiFi eşleri değişti")
+
+		manager.requestPeers(channel, wifiP2pActivity::onPeerAvailable)
 	}
 
 	private fun onConnectionChanged(): Unit {
-		Log.d(TAG, "onConnectionChanged: ")
+        Log.d(TAG, "onConnectionChanged: WiFi P2P bağlantısı değişti")
 	}
 
 	private fun onThisDeviceChanged(): Unit {
