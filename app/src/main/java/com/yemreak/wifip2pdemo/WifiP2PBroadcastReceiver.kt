@@ -19,7 +19,7 @@ class WifiP2PBroadcastReceiver(
 		val TAG = WifiP2PBroadcastReceiver::javaClass.name
 	}
 
-	@SuppressLint("MissingPermission")
+    @RequiresPermission(Manifest.permission.ACCESS_FINE_LOCATION)
     override fun onReceive(context: Context, intent: Intent) {
 		when (intent.action) {
 			WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION -> onStateChanged(intent)
