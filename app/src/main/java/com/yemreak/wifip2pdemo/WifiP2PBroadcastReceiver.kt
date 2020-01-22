@@ -1,6 +1,7 @@
 package com.yemreak.wifip2pdemo
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -18,7 +19,8 @@ class WifiP2PBroadcastReceiver(
 		val TAG = WifiP2PBroadcastReceiver::javaClass.name
 	}
 
-	override fun onReceive(context: Context, intent: Intent) {
+	@SuppressLint("MissingPermission")
+    override fun onReceive(context: Context, intent: Intent) {
 		when (intent.action) {
 			WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION -> onStateChanged(intent)
 			WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION -> onPeerChanged()
