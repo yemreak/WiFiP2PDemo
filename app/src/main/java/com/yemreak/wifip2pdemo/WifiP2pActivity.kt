@@ -4,10 +4,7 @@ import android.Manifest
 import android.content.Context
 import android.content.IntentFilter
 import android.content.pm.PackageManager
-import android.net.wifi.p2p.WifiP2pConfig
-import android.net.wifi.p2p.WifiP2pDevice
-import android.net.wifi.p2p.WifiP2pDeviceList
-import android.net.wifi.p2p.WifiP2pManager
+import android.net.wifi.p2p.*
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -155,9 +152,9 @@ class WifiP2pActivity : AppCompatActivity() {
         }
     }
 
-	/**
-	 * Cihazları peerList objesine kaydetme
-	 */
+    /**
+     * Cihazları peerList objesine kaydetme
+     */
     fun storePeers(peers: WifiP2pDeviceList) {
         peers.apply {
             Log.v(TAG, "onPeersAvailable: $deviceList")
@@ -178,5 +175,24 @@ class WifiP2pActivity : AppCompatActivity() {
         }
 
         manager.connect(channel, config, P2pActionListener("Bağlantı"))
+    }
+
+    fun createSocket(info: WifiP2pInfo) {
+		when {
+			isServer(info) -> { /* serverSocket */}
+			isClient(info) -> { /* clientSocket */}
+		}
+    }
+
+    private fun isServer(info: WifiP2pInfo): Boolean {
+		return info.run {
+			groupFormed && isGroupOwner
+		}
+    }
+
+    private fun isClient(info: WifiP2pInfo): Boolean {
+		return info.run {
+			groupFormed && !isGroupOwner
+		}
     }
 }

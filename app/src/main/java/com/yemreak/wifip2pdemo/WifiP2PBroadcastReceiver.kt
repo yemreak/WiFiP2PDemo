@@ -54,6 +54,8 @@ class WifiP2PBroadcastReceiver(
 
 	private fun onConnectionChanged(): Unit {
         Log.d(TAG, "onConnectionChanged: WiFi P2P bağlantısı değişti")
+
+        manager.requestConnectionInfo(channel, wifiP2pActivity::createSocket)
 	}
 
 	private fun onThisDeviceChanged(): Unit {
