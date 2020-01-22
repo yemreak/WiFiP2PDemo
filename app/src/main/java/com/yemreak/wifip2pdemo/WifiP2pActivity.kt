@@ -10,8 +10,9 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import kotlinx.android.synthetic.main.activity_wifip2p.*
 
-class MainActivity : AppCompatActivity() {
+class WifiP2pActivity : AppCompatActivity() {
 
 	val PRC_ACCESS_FINE_LOCATION = 1
 
@@ -37,9 +38,18 @@ class MainActivity : AppCompatActivity() {
 
 	private lateinit var wifiReceiver: WifiP2PBroadcastReceiver
 
+	/**
+	 * WiFi P2P aktiflik durumu
+	 */
+	var p2pEnable: Boolean = false
+		set(value) {
+			field = value
+			tvP2pStatus.text = value.toString()
+		}
+
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
-		setContentView(R.layout.activity_main)
+		setContentView(R.layout.activity_wifip2p)
 
 		initWP2P()
 	}
@@ -99,6 +109,5 @@ class MainActivity : AppCompatActivity() {
 	override fun onPause() {
 		super.onPause()
 		unregisterWifiReceiver()
-
 	}
 }

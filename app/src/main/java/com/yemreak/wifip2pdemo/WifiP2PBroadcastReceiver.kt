@@ -7,40 +7,50 @@ import android.net.wifi.p2p.WifiP2pManager
 import android.util.Log
 
 class WifiP2PBroadcastReceiver(
-    val manager: WifiP2pManager,
-    val channel: WifiP2pManager.Channel,
-    val wifiActivity: MainActivity
+		val manager: WifiP2pManager,
+		val channel: WifiP2pManager.Channel,
+		val wifiP2pActivity: WifiP2pActivity
 ) : BroadcastReceiver() {
 
-    companion object {
-        val TAG = WifiP2PBroadcastReceiver::javaClass.name
-    }
+	companion object {
+		val TAG = WifiP2PBroadcastReceiver::javaClass.name
+	}
 
-    override fun onReceive(context: Context, intent: Intent) {
-        when (intent.action) {
-            WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION -> onStateChanged()
-            WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION -> onPeerChanged()
-            WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION ->
-                onConnectionChanged()
-            WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION ->
-                onThisDeviceChanged()
-        }
-    }
+	override fun onReceive(context: Context, intent: Intent) {
+		when (intent.action) {
+			WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION -> onStateChanged(intent)
+			WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION -> onPeerChanged()
+			WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION ->
+				onConnectionChanged()
+			WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION ->
+				onThisDeviceChanged()
+		}
+	}
 
-    private fun onStateChanged(): Unit {
-        Log.d(TAG, "onStateChanged: ")
-    }
+	/**
+	 * Wifi P2P durum değişikliklerinde tetiklenir
+	 */
+	private fun onStateChanged(intent: Intent): Unit {
+		Log.d(TAG, "onStateChanged: Wifi P2P durumu değişti")
 
-    private fun onPeerChanged(): Unit {
-        Log.d(TAG, "onPeerChanged: ")
-    }
+		wifiP2pActivity.p2pEnable = when (
+			intent.getIntExtra(WifiP2pManager.EXTRA_WIFI_STATE, -1)
+			) {
+			WifiP2pManager.WIFI_P2P_STATE_ENABLED -> true
+			else -> false
+		}
+	}
 
-    private fun onConnectionChanged(): Unit {
-        Log.d(TAG, "onConnectionChanged: ")
-    }
+	private fun onPeerChanged(): Unit {
+		Log.d(TAG, "onPeerChanged: ")
+	}
 
-    private fun onThisDeviceChanged(): Unit {
-        Log.d(TAG, "onThisDeviceChanged: ")
-    }
+	private fun onConnectionChanged(): Unit {
+		Log.d(TAG, "onConnectionChanged: ")
+	}
+
+	private fun onThisDeviceChanged(): Unit {
+		Log.d(TAG, "onThisDeviceChanged: ")
+	}
 
 }
